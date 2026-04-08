@@ -84,7 +84,6 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:#000;min-height:100vh
   margin-bottom:12px;flex-shrink:0;
 }
 .avatar-img{width:90px;height:90px;border-radius:50%;object-fit:cover;display:block;background:#111;}
-.avatar-fallback{width:90px;height:90px;border-radius:50%;background:rgba(88,101,242,.2);display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:700;color:#5865F2;}
 
 /* Nitro / premium rozeti */
 .badges{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;justify-content:center;}
@@ -95,7 +94,6 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:#000;min-height:100vh
 }
 .badge-dc{background:rgba(88,101,242,.2);border:1px solid rgba(88,101,242,.35);color:#a5aef5;}
 .badge-nitro{background:rgba(255,115,250,.15);border:1px solid rgba(255,115,250,.3);color:#f9a8f9;}
-.badge-boost{background:rgba(255,115,250,.15);border:1px solid rgba(255,115,250,.3);color:#f9a8f9;}
 
 .display-name{font-size:22px;font-weight:700;color:#fff;letter-spacing:-.3px;text-align:center;margin-bottom:3px;}
 .username-tag{font-size:13px;color:rgba(255,255,255,.35);margin-bottom:6px;}
@@ -156,21 +154,18 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:#000;min-height:100vh
 </head>
 <body>
 
-<!-- Video arka plan -->
 <div id="yt-bg">
   <iframe id="yt-iframe"
-    src="https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=1&mute=1&loop=1&playlist=jfKfPfyJRdk&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1"
+    src="https://www.youtube-nocookie.com/embed/jfKfPfyJRdk?autoplay=1&mute=1&loop=1&playlist=jfKfPfyJRdk&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&disablekb=1&enablejsapi=1"
     allow="autoplay;encrypted-media"
     allowfullscreen></iframe>
 </div>
 <div class="overlay"></div>
 
-<!-- Ses butonu -->
 <button id="sound-btn" onclick="toggleSound()">
   <span id="sound-icon">🔇</span> <span id="sound-label">Sesi Aç</span>
 </button>
 
-<!-- Login ekranı -->
 <div id="login-screen">
   <p class="login-title">Bio Sayfam</p>
   <p class="login-sub">Discord hesabınla devam et</p>
@@ -180,7 +175,6 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:#000;min-height:100vh
   </button>
 </div>
 
-<!-- Profil ekranı -->
 <div id="profile-screen">
   <div class="card">
 
@@ -291,14 +285,12 @@ function showProfile(user) {
   document.getElementById("joined-date").textContent   = `Discord'a katılım: ${discordIdToDate(user.id)}`;
   document.getElementById("profile-link").textContent  = `discord.com/users/${user.id}`;
 
-  // Aksan rengi
   if (user.accent_color) {
     const hex = "#" + user.accent_color.toString(16).padStart(6,"0");
     document.documentElement.style.setProperty("--accent", hex);
     document.getElementById("avatar-ring-el")?.style.setProperty("background", `linear-gradient(135deg,${hex},rgba(88,101,242,.2))`);
   }
 
-  // Nitro rozeti
   if (user.premium_type && user.premium_type > 0) {
     const b = document.getElementById("badges");
     b.innerHTML += `<span class="badge badge-nitro">✦ Nitro</span>`;
@@ -315,12 +307,13 @@ function logout() {
   document.getElementById("profile-screen").style.display = "none";
 }
 
-// ── YouTube ────────────────────────────
+// ── YouTube (Optimize Edilmiş Nocookie Yöntemi) ──
 let isMuted = true;
 
 function setVideo(id) {
+  // Nocookie ve dikkat dağıtıcı öğeleri kapatan parametreler eklendi
   document.getElementById("yt-iframe").src =
-    `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1`;
+    `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&disablekb=1`;
   isMuted = true;
   document.getElementById("sound-icon").textContent  = "🔇";
   document.getElementById("sound-label").textContent = "Sesi Aç";
@@ -328,25 +321,18 @@ function setVideo(id) {
 
 function toggleSound() {
   const iframe = document.getElementById("yt-iframe");
-  // YouTube iframe API ile ses açma — URL parametresini değiştir
   const src = iframe.src;
+  const videoId = src.match(/embed\/([^?]+)/)?.[1];
+  
+  if (!videoId) return;
+
   if (isMuted) {
-    iframe.src = src.replace("&mute=1","").replace("mute=1&","") + "&mute=0";
-    // YouTube embed mute=0 parametresini yok sayabiliyor,
-    // bu yüzden alternatif olarak yeni sekme öner
+    iframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=0&loop=1&playlist=${videoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&disablekb=1`;
     isMuted = false;
     document.getElementById("sound-icon").textContent  = "🔊";
     document.getElementById("sound-label").textContent = "Sessiz";
-    // Gerçek ses için iframe'i yenile
-    const videoId = src.match(/embed\/([^?]+)/)?.[1];
-    if (videoId) {
-      iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&loop=1&playlist=${videoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1`;
-    }
   } else {
-    const videoId = src.match(/embed\/([^?]+)/)?.[1];
-    if (videoId) {
-      iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1`;
-    }
+    iframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&disablekb=1`;
     isMuted = true;
     document.getElementById("sound-icon").textContent  = "🔇";
     document.getElementById("sound-label").textContent = "Sesi Aç";
