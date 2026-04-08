@@ -97,14 +97,9 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:#000;min-height:100vh
 
 .display-name{font-size:22px;font-weight:700;color:#fff;letter-spacing:-.3px;text-align:center;margin-bottom:3px;}
 .username-tag{font-size:13px;color:rgba(255,255,255,.35);margin-bottom:6px;}
-
-/* Katılım tarihi */
 .joined{font-size:12px;color:rgba(255,255,255,.28);margin-bottom:16px;}
-
-/* Divider */
 .divider{width:100%;height:1px;background:linear-gradient(to right,transparent,rgba(255,255,255,.08),transparent);margin-bottom:16px;}
 
-/* Info satırları */
 .info-row{width:100%;display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
 .info-item{
   display:flex;align-items:center;gap:10px;
@@ -117,7 +112,6 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:#000;min-height:100vh
 .info-label{font-size:10px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.05em;}
 .info-val{font-size:13px;color:#fff;font-weight:500;margin-top:1px;}
 
-/* YouTube panel */
 .yt-row{width:100%;}
 .btn{
   width:100%;padding:12px 16px;border-radius:12px;
@@ -148,17 +142,13 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:#000;min-height:100vh
 
 .logout-btn{margin-top:12px;font-size:12px;color:rgba(255,255,255,.18);background:none;border:none;cursor:pointer;font-family:inherit;transition:color .2s;}
 .logout-btn:hover{color:rgba(255,255,255,.45);}
-
 .footer{margin-top:14px;font-size:11px;color:rgba(255,255,255,.12);text-align:center;}
 </style>
 </head>
 <body>
 
 <div id="yt-bg">
-  <iframe id="yt-iframe"
-    src="https://www.youtube-nocookie.com/embed/jfKfPfyJRdk?autoplay=1&mute=1&loop=1&playlist=jfKfPfyJRdk&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&disablekb=1&enablejsapi=1"
-    allow="autoplay;encrypted-media"
-    allowfullscreen></iframe>
+  <div id="yt-iframe"></div>
 </div>
 <div class="overlay"></div>
 
@@ -177,24 +167,19 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:#000;min-height:100vh
 
 <div id="profile-screen">
   <div class="card">
-
     <div class="avatar-ring">
       <div id="avatar-wrap"></div>
     </div>
-
     <div class="badges" id="badges">
       <span class="badge badge-dc">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
         Discord
       </span>
     </div>
-
     <h1 class="display-name" id="display-name">...</h1>
     <p class="username-tag" id="username-tag">...</p>
     <p class="joined" id="joined-date">...</p>
-
     <div class="divider"></div>
-
     <div class="info-row">
       <div class="info-item">
         <span class="info-icon">🪪</span>
@@ -211,9 +196,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:#000;min-height:100vh
         </div>
       </div>
     </div>
-
     <div class="divider"></div>
-
     <div class="yt-row">
       <button class="btn" onclick="toggleYt()">
         <span class="btn-icon">▶</span>
@@ -225,21 +208,95 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:#000;min-height:100vh
         <button class="yt-apply" onclick="applyVideo()">Uygula</button>
       </div>
     </div>
-
     <p class="footer">discord oauth · kişisel bio</p>
   </div>
   <button class="logout-btn" onclick="logout()">Çıkış yap</button>
 </div>
 
+<script src="https://www.youtube.com/iframe_api"></script>
+
 <script>
-/* ═══════════════════════════════════════
-   ⚙️  SADECE BU İKİ SATIRI DEĞİŞTİR
-   ═══════════════════════════════════════ */
 const CLIENT_ID    = "1491395268200108052";
 const REDIRECT_URI = "https://com10w.github.io/biopage/";
-/* ═══════════════════════════════════════ */
 
-// ── Discord OAuth ──────────────────────
+// ── YouTube API ile Kesintisiz Video & Kalite Zorlama ──
+let player;
+let isMuted = true;
+
+// YouTube API kütüphanesi yüklendiğinde otomatik çalışır
+function onYouTubeIframeAPIReady() {
+  const savedYt = sessionStorage.getItem("yt_id") || "jfKfPfyJRdk";
+  
+  player = new YT.Player('yt-iframe', {
+    videoId: savedYt,
+    host: 'https://www.youtube-nocookie.com',
+    playerVars: {
+      autoplay: 1,
+      controls: 0,
+      showinfo: 0,
+      rel: 0,
+      loop: 1,
+      playlist: savedYt, // Döngü için gerekli
+      iv_load_policy: 3,
+      modestbranding: 1,
+      disablekb: 1,
+      vq: 'hd1080' // Kaliteyi HD yapmaya zorlar
+    },
+    events: {
+      'onReady': onPlayerReady
+    }
+  });
+}
+
+function onPlayerReady(event) {
+  event.target.mute(); // Otomatik oynatma için sessiz başlamak zorundadır
+  event.target.setPlaybackQuality('hd1080'); // API üzerinden kaliteyi tekrar zorluyoruz
+  event.target.playVideo();
+}
+
+function toggleSound() {
+  if (!player || typeof player.unMute !== 'function') return;
+
+  if (isMuted) {
+    player.unMute();     // Sesi açar (sayfayı yenilemeden)
+    player.setVolume(100); // Sesi maksimuma çeker
+    isMuted = false;
+    document.getElementById("sound-icon").textContent  = "🔊";
+    document.getElementById("sound-label").textContent = "Sessiz";
+  } else {
+    player.mute();       // Sessize alır
+    isMuted = true;
+    document.getElementById("sound-icon").textContent  = "🔇";
+    document.getElementById("sound-label").textContent = "Sesi Aç";
+  }
+}
+
+function applyVideo() {
+  let v = document.getElementById("yt-input").value.trim();
+  try { v = new URL(v).searchParams.get("v") || v; } catch {}
+  if (v && player && typeof player.loadVideoById === 'function') { 
+    player.loadVideoById(v);
+    player.setPlaybackQuality('hd1080'); // Yeni video yüklenince kaliteyi tekrar zorla
+    sessionStorage.setItem("yt_id", v); 
+    
+    // Sesi baştaki duruma döndür
+    player.mute();
+    isMuted = true;
+    document.getElementById("sound-icon").textContent  = "🔇";
+    document.getElementById("sound-label").textContent = "Sesi Aç";
+  }
+}
+
+function toggleYt() {
+  const open = document.getElementById("yt-panel").classList.toggle("open");
+  document.getElementById("yt-arrow").textContent = open ? "˅" : "›";
+}
+
+document.getElementById("yt-input").addEventListener("keydown", e => {
+  if (e.key === "Enter") applyVideo();
+});
+
+// ── Discord OAuth İşlemleri ──
 function loginWithDiscord() {
   const p = new URLSearchParams({
     client_id: CLIENT_ID,
@@ -262,21 +319,18 @@ async function fetchUser(token) {
   return r.json();
 }
 
-// ── Discord ID'den hesap oluşturma tarihi ──
 function discordIdToDate(id) {
   const ms = BigInt(id) >> 22n;
   const date = new Date(Number(ms) + 1420070400000);
   return date.toLocaleDateString("tr-TR", { year:"numeric", month:"long", day:"numeric" });
 }
 
-// ── Profili göster ─────────────────────
 function showProfile(user) {
   const avatarUrl = user.avatar
     ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=256`
     : `https://cdn.discordapp.com/embed/avatars/${Number(BigInt(user.id) % 6n)}.png`;
 
-  document.getElementById("avatar-wrap").innerHTML =
-    `<img class="avatar-img" src="${avatarUrl}" alt="avatar">`;
+  document.getElementById("avatar-wrap").innerHTML = `<img class="avatar-img" src="${avatarUrl}" alt="avatar">`;
 
   const displayName = user.global_name || user.username;
   document.getElementById("display-name").textContent  = displayName;
@@ -293,7 +347,9 @@ function showProfile(user) {
 
   if (user.premium_type && user.premium_type > 0) {
     const b = document.getElementById("badges");
-    b.innerHTML += `<span class="badge badge-nitro">✦ Nitro</span>`;
+    if (!b.innerHTML.includes("Nitro")) {
+      b.innerHTML += `<span class="badge badge-nitro">✦ Nitro</span>`;
+    }
   }
 
   document.getElementById("login-screen").style.display   = "none";
@@ -307,58 +363,7 @@ function logout() {
   document.getElementById("profile-screen").style.display = "none";
 }
 
-// ── YouTube (Optimize Edilmiş Nocookie Yöntemi) ──
-let isMuted = true;
-
-function setVideo(id) {
-  // Nocookie ve dikkat dağıtıcı öğeleri kapatan parametreler eklendi
-  document.getElementById("yt-iframe").src =
-    `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&disablekb=1`;
-  isMuted = true;
-  document.getElementById("sound-icon").textContent  = "🔇";
-  document.getElementById("sound-label").textContent = "Sesi Aç";
-}
-
-function toggleSound() {
-  const iframe = document.getElementById("yt-iframe");
-  const src = iframe.src;
-  const videoId = src.match(/embed\/([^?]+)/)?.[1];
-  
-  if (!videoId) return;
-
-  if (isMuted) {
-    iframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=0&loop=1&playlist=${videoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&disablekb=1`;
-    isMuted = false;
-    document.getElementById("sound-icon").textContent  = "🔊";
-    document.getElementById("sound-label").textContent = "Sessiz";
-  } else {
-    iframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&disablekb=1`;
-    isMuted = true;
-    document.getElementById("sound-icon").textContent  = "🔇";
-    document.getElementById("sound-label").textContent = "Sesi Aç";
-  }
-}
-
-function toggleYt() {
-  const open = document.getElementById("yt-panel").classList.toggle("open");
-  document.getElementById("yt-arrow").textContent = open ? "˅" : "›";
-}
-
-function applyVideo() {
-  let v = document.getElementById("yt-input").value.trim();
-  try { v = new URL(v).searchParams.get("v") || v; } catch {}
-  if (v) { setVideo(v); sessionStorage.setItem("yt_id", v); }
-}
-
-document.getElementById("yt-input").addEventListener("keydown", e => {
-  if (e.key === "Enter") applyVideo();
-});
-
-// ── Başlangıç ──────────────────────────
 (async () => {
-  const savedYt = sessionStorage.getItem("yt_id");
-  if (savedYt) setVideo(savedYt);
-
   let token = getTokenFromHash() || sessionStorage.getItem("dc_token");
   if (!token) return;
 
