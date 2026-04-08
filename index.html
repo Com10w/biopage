@@ -3,66 +3,77 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bio | guns.lol tarzı</title>
+<title>Bio | Premium YouTube</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 /* ── Genel Ayarlar ── */
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'DM Sans',system-ui,sans-serif;background:#000;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;color:#fff;}
 
-/* ── Asla Donmayan MP4 Arka Plan ── */
-#bg-video {
+/* ── YouTube Arka Plan ── */
+#yt-bg {
   position: fixed;
   top: 50%; left: 50%;
-  min-width: 100%; min-height: 100%;
-  width: auto; height: auto;
+  width: 100vw; height: 100vh;
+  min-width: 177.78vh; /* 16:9 Oranı */
+  min-height: 56.25vw;
   transform: translate(-50%, -50%);
   z-index: 0;
-  object-fit: cover;
-  opacity: 0; /* Başlangıçta gizli, tıklayınca açılacak */
-  transition: opacity 1s ease-in-out;
-  pointer-events: none;
+  pointer-events: none; /* Tıklamaları engeller, video durdurulamaz */
+  filter: blur(15px); /* Başlangıçta bulanık */
+  transition: filter 1.5s ease;
+}
+#yt-iframe {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  border: none;
+}
+/* Karartma katmanı */
+.overlay {
+  position: fixed; inset: 0; z-index: 1;
+  background: rgba(0,0,0,0.5);
 }
 
-/* ── "Click to Enter" Ekranı (Guns.lol Taktiği) ── */
+/* ── "Click to Enter" Ekranı ── */
 #enter-screen {
   position: fixed; inset: 0; z-index: 50;
   display: flex; align-items: center; justify-content: center;
-  background: rgba(0,0,0,0.8);
-  backdrop-filter: blur(10px);
+  background: transparent;
   cursor: pointer;
   transition: opacity 0.8s ease, visibility 0.8s ease;
 }
 .enter-text {
-  font-size: 18px; font-weight: 500; letter-spacing: 2px;
+  font-size: 16px; font-weight: 500; letter-spacing: 3px;
+  text-transform: lowercase;
   animation: pulse 2s infinite;
+  text-shadow: 0 0 10px rgba(255,255,255,0.5);
 }
-@keyframes pulse { 0%, 100% {opacity: 1;} 50% {opacity: 0.5;} }
+@keyframes pulse { 0%, 100% {opacity: 1;} 50% {opacity: 0.3;} }
 
 /* ── Ana İçerik Konteyneri ── */
 #main-content {
   position: relative; z-index: 10;
-  display: none; /* Discord girişi sonrası veya direkt görünür olacak */
+  display: none; 
   flex-direction: column; align-items: center;
   opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 1s ease, transform 1s ease;
+  transform: translateY(30px) scale(0.95);
+  transition: opacity 1s cubic-bezier(0.2, 1, 0.3, 1), transform 1s cubic-bezier(0.2, 1, 0.3, 1);
 }
 #main-content.visible {
-  opacity: 1; transform: translateY(0);
+  opacity: 1; transform: translateY(0) scale(1);
 }
 
-/* ── Premium Glassmorphism Kart (Guns.lol Tarzı) ── */
+/* ── Premium Glassmorphism Kart ── */
 .card {
-  width: 380px;
-  background: rgba(15, 15, 20, 0.4); /* Daha şeffaf */
-  backdrop-filter: blur(15px); /* Buzlu cam efekti */
-  -webkit-backdrop-filter: blur(15px);
-  border: 1px solid rgba(255,255,255,0.1);
+  width: 360px;
+  background: rgba(15, 15, 20, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 24px;
   padding: 35px 30px;
   display: flex; flex-direction: column; align-items: center;
-  box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.5);
 }
 
 /* ── Profil Resmi ── */
@@ -71,7 +82,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:#000;min-height:100vh
   padding: 3px;
   background: linear-gradient(135deg, var(--accent, #fff), rgba(255,255,255,0.1));
   margin-bottom: 15px; flex-shrink: 0;
-  box-shadow: 0 0 20px var(--accent-glow, rgba(255,255,255,0.1));
+  box-shadow: 0 0 25px var(--accent-glow, rgba(255,255,255,0.1));
 }
 .avatar-img {width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; background: #111;}
 
@@ -81,8 +92,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:#000;min-height:100vh
 .badge-nitro {color: #f9a8f9; background: rgba(255,115,250,.1); border-color: rgba(255,115,250,.3);}
 
 .display-name {font-size: 24px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 4px;}
-.username-tag {font-size: 14px; color: rgba(255,255,255,.5); margin-bottom: 10px;}
-.joined {font-size: 12px; color: rgba(255,255,255,.3); margin-bottom: 20px;}
+.username-tag {font-size: 14px; color: rgba(255,255,255,.5); margin-bottom: 15px;}
 
 /* ── Bilgi Satırları ── */
 .info-row {width: 100%; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;}
@@ -95,7 +105,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:#000;min-height:100vh
 .info-label {color: rgba(255,255,255,0.4); font-weight: 500;}
 .info-val {font-weight: 600; color: #fff;}
 
-/* ── Login / Çıkış Butonları ── */
+/* ── Butonlar ── */
 .action-btn {
   width: 100%; padding: 14px; border-radius: 12px; border: none;
   background: #fff; color: #000; font-size: 14px; font-weight: 700; font-family: inherit;
@@ -112,15 +122,16 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:#000;min-height:100vh
   background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1);
   border-radius: 50%; width: 40px; height: 40px;
   display: flex; align-items: center; justify-content: center; cursor: pointer;
-  backdrop-filter: blur(5px); opacity: 0; transition: opacity 1s;
+  backdrop-filter: blur(5px); opacity: 0; transition: opacity 1s; color: #fff; font-size: 16px;
 }
 </style>
 </head>
 <body>
 
-<video id="bg-video" loop playsinline>
-  <source src="BURAYA_MP4_LINKI_GELECEK.mp4" type="video/mp4">
-</video>
+<div id="yt-bg">
+  <div id="yt-iframe"></div>
+</div>
+<div class="overlay"></div>
 
 <button id="volume-toggle" onclick="toggleMute()">🔊</button>
 
@@ -144,7 +155,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:#000;min-height:100vh
       </div>
       
       <div class="badges" id="badges">
-        <span class="badge">D</span>
+        <span class="badge">Discord</span>
       </div>
 
       <h1 class="display-name" id="display-name">...</h1>
@@ -166,44 +177,97 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:#000;min-height:100vh
   <button id="logout-btn-el" class="logout-btn" style="display:none;" onclick="logout()">Çıkış Yap</button>
 </div>
 
+<script src="https://www.youtube.com/iframe_api"></script>
+
 <script>
 /* ═══════════════════════════════════════
-   ⚙️ API AYARLARI
+   ⚙️ AYARLAR KISMI
    ═══════════════════════════════════════ */
 const CLIENT_ID    = "1491395268200108052";
 const REDIRECT_URI = "https://com10w.github.io/biopage/";
+const YOUTUBE_VIDEO_ID = "BOLhTmH2dvU"; // İstediğin YouTube video ID'si
+/* ═══════════════════════════════════════ */
 
-// ── SİTEYE GİRİŞ (CLICK TO ENTER) MANTIĞI ──
-const bgVideo = document.getElementById('bg-video');
+let player;
+let isMuted = false;
 
+// ── 1. YOUTUBE API (Arka planda sessizce başlatır) ──
+function onYouTubeIframeAPIReady() {
+  player = new YT.Player('yt-iframe', {
+    videoId: YOUTUBE_VIDEO_ID,
+    host: 'https://www.youtube-nocookie.com',
+    playerVars: {
+      autoplay: 1,      // Otomatik başla
+      mute: 1,          // Başlangıçta sessiz (tarayıcı engellemesin diye)
+      controls: 0,
+      showinfo: 0,
+      rel: 0,
+      loop: 1,
+      playlist: YOUTUBE_VIDEO_ID,
+      iv_load_policy: 3,
+      modestbranding: 1,
+      disablekb: 1,
+      vq: 'hd1080'
+    },
+    events: {
+      'onReady': onPlayerReady,
+      'onStateChange': onPlayerStateChange
+    }
+  });
+}
+
+function onPlayerReady(event) {
+  event.target.playVideo();
+}
+
+// Video bittiğinde KESİN OLARAK başa sarar (Sonsuz Döngü Garantisi)
+function onPlayerStateChange(event) {
+  if (event.data === YT.PlayerState.ENDED) {
+    player.seekTo(0);
+    player.playVideo();
+  }
+}
+
+// ── 2. CLICK TO ENTER MANTIĞI ──
 function enterSite() {
   // Giriş ekranını gizle
   document.getElementById('enter-screen').style.opacity = '0';
   setTimeout(() => { document.getElementById('enter-screen').style.visibility = 'hidden'; }, 800);
   
-  // Videoyu başlat ve görünür yap (Sesiyle beraber başlar)
-  bgVideo.volume = 0.5; // Ses seviyesi %50
-  bgVideo.play().catch(e => console.log("Video başlatılamadı, MP4 linkini kontrol et."));
-  bgVideo.style.opacity = '1';
+  // Arka plandaki bulanıklığı (blur) kaldır
+  document.getElementById('yt-bg').style.filter = 'blur(0px)';
 
-  // Ana profili / Login ekranını göster
+  // Sesi patlat (Tarayıcı tıklama aldığı için artık izin verir)
+  if(player && typeof player.unMute === 'function') {
+    player.unMute();
+    player.setVolume(100);
+    isMuted = false;
+  }
+
+  // Profil kartını ve Ses butonunu ekrana getir
   document.getElementById('main-content').style.display = 'flex';
-  setTimeout(() => { document.getElementById('main-content').classList.add('visible'); }, 100);
-  document.getElementById('volume-toggle').style.opacity = '1';
+  setTimeout(() => { 
+    document.getElementById('main-content').classList.add('visible'); 
+    document.getElementById('volume-toggle').style.opacity = '1';
+  }, 100);
 }
 
-// ── SES KONTROLÜ ──
+// ── 3. SES AÇ/KAPAT BUTONU ──
 function toggleMute() {
-  if (bgVideo.muted) {
-    bgVideo.muted = false;
-    document.getElementById('volume-toggle').textContent = '🔊';
+  if (!player || typeof player.unMute !== 'function') return;
+
+  if (isMuted) {
+    player.unMute();     
+    isMuted = false;
+    document.getElementById("volume-toggle").textContent = "🔊";
   } else {
-    bgVideo.muted = true;
-    document.getElementById('volume-toggle').textContent = '🔇';
+    player.mute();       
+    isMuted = true;
+    document.getElementById("volume-toggle").textContent = "🔇";
   }
 }
 
-// ── DISCORD OAUTH İŞLEMLERİ ──
+// ── 4. DISCORD OAUTH İŞLEMLERİ ──
 function loginWithDiscord() {
   const p = new URLSearchParams({
     client_id: CLIENT_ID,
