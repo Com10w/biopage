@@ -219,11 +219,10 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:#000;min-height:100vh
 const CLIENT_ID    = "1491395268200108052";
 const REDIRECT_URI = "https://com10w.github.io/biopage/";
 
-// ── YouTube API ile Kesintisiz Video & Kalite Zorlama ──
+// ── YouTube API ile Kesintisiz Video, Kalite Zorlama ve Kesin Döngü (Loop) ──
 let player;
 let isMuted = true;
 
-// YouTube API kütüphanesi yüklendiğinde otomatik çalışır
 function onYouTubeIframeAPIReady() {
   const savedYt = sessionStorage.getItem("yt_id") || "jfKfPfyJRdk";
   
@@ -236,35 +235,44 @@ function onYouTubeIframeAPIReady() {
       showinfo: 0,
       rel: 0,
       loop: 1,
-      playlist: savedYt, // Döngü için gerekli
+      playlist: savedYt,
       iv_load_policy: 3,
       modestbranding: 1,
       disablekb: 1,
-      vq: 'hd1080' // Kaliteyi HD yapmaya zorlar
+      vq: 'hd1080'
     },
     events: {
-      'onReady': onPlayerReady
+      'onReady': onPlayerReady,
+      'onStateChange': onPlayerStateChange // Video durum değişikliklerini dinle
     }
   });
 }
 
 function onPlayerReady(event) {
-  event.target.mute(); // Otomatik oynatma için sessiz başlamak zorundadır
-  event.target.setPlaybackQuality('hd1080'); // API üzerinden kaliteyi tekrar zorluyoruz
+  event.target.mute(); 
+  event.target.setPlaybackQuality('hd1080'); 
   event.target.playVideo();
+}
+
+// İŞTE BÜYÜ BURADA: Video bittiği an (0. saniyeye) sar ve tekrar başlat
+function onPlayerStateChange(event) {
+  if (event.data === YT.PlayerState.ENDED) {
+    player.seekTo(0);
+    player.playVideo();
+  }
 }
 
 function toggleSound() {
   if (!player || typeof player.unMute !== 'function') return;
 
   if (isMuted) {
-    player.unMute();     // Sesi açar (sayfayı yenilemeden)
-    player.setVolume(100); // Sesi maksimuma çeker
+    player.unMute();     
+    player.setVolume(100); 
     isMuted = false;
     document.getElementById("sound-icon").textContent  = "🔊";
     document.getElementById("sound-label").textContent = "Sessiz";
   } else {
-    player.mute();       // Sessize alır
+    player.mute();       
     isMuted = true;
     document.getElementById("sound-icon").textContent  = "🔇";
     document.getElementById("sound-label").textContent = "Sesi Aç";
@@ -276,10 +284,9 @@ function applyVideo() {
   try { v = new URL(v).searchParams.get("v") || v; } catch {}
   if (v && player && typeof player.loadVideoById === 'function') { 
     player.loadVideoById(v);
-    player.setPlaybackQuality('hd1080'); // Yeni video yüklenince kaliteyi tekrar zorla
+    player.setPlaybackQuality('hd1080'); 
     sessionStorage.setItem("yt_id", v); 
     
-    // Sesi baştaki duruma döndür
     player.mute();
     isMuted = true;
     document.getElementById("sound-icon").textContent  = "🔇";
