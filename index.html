@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Benim Bio Sayfam</title>
+<title>BOT Bio Sayfam</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 /* ── Genel Ayarlar ── */
@@ -76,9 +76,8 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:#000;min-height:100vh
 }
 
 /* ── Profil Resmi ── */
-/* Buradaki var(--accent) rengini kendi zevkine göre değiştirebilirsin */
 :root {
-  --accent: #5865F2; /* Şuan Discord mavisi, burayı #ff0000 yaparsan kırmızı olur */
+  --accent: #5865F2; 
   --accent-glow: rgba(88, 101, 242, 0.4);
 }
 
@@ -143,7 +142,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:#000;min-height:100vh
     </div>
     
     <div class="badges">
-      <span class="badge badge-nitro">!_Com10#</span>
+      <span class="badge badge-nitro">Developed by !_Com10#</span>
       <span class="badge badge-dev">BOT</span>
     </div>
 
@@ -151,9 +150,9 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:#000;min-height:100vh
     <p class="username-tag">Javo Manager</p>
     
     <div class="info-row">
-      <a href="https://instagram.com/hesabin" target="_blank" class="info-item">
-        <span class="info-label">Instagram</span>
-        <span class="info-val"></span>
+      <a href="https://discord.gg/7ZRmmsfD" target="_blank" class="info-item">
+        <span class="info-label">Discord Sunucusu</span>
+        <span class="info-val">Katılmak için tıkla</span>
       </a>
       <div class="info-item">
         <span class="info-label">Discord ID</span>
@@ -193,10 +192,17 @@ function onYouTubeIframeAPIReady() {
 }
 
 function onPlayerReady(event) {
+  event.target.setPlaybackQuality('hd1080'); // HD'ye zorlama eklendi
   event.target.playVideo();
 }
 
 function onPlayerStateChange(event) {
+  // Video oynamaya başladığı an en yüksek kaliteyi zorla!
+  if (event.data === YT.PlayerState.PLAYING) {
+    event.target.setPlaybackQuality('hd1080');
+  }
+
+  // Sonsuz döngü kontrolü
   if (event.data === YT.PlayerState.ENDED) {
     player.seekTo(0);
     player.playVideo();
